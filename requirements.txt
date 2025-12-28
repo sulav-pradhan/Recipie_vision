@@ -1,0 +1,8 @@
+numpy
+opencv-python
+pyyaml
+requests
+langchain-core
+langchain-openai
+langchain-ollama
+langgraph
