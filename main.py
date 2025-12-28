@@ -15,6 +15,7 @@ from agent.tools import (
 
 load_dotenv()
 
+"check for commit message"
 class AgentState(TypedDict):
     input_file: Optional[str]
     messages: Annotated[list[AnyMessage], add_messages]
