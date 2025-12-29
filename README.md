@@ -1,61 +1,116 @@
-# Text Recognition Agent Tutorial
-A step-by-step tutorial for building an OCR (Optical Character Recognition) AI agent using LangGraph that can extract and process text from images, with progressively added tools for enhanced functionality.
+# RECIPIE VISION
 
 ## Overview
-This project demonstrates how to create an AI agent that can:
-* Extract text from images using vision-capable language models
-* Preprocess images to improve OCR accuracy
-* Convert temperatures between Fahrenheit and Celsius
-* Convert measurements (length, weight, volume) between different units
 
-The tutorial is designed to show how agents can grow in complexity by incrementally adding new tools and capabilities.
+This project is an **Optical Character Recognition (OCR) AI agent** built with LangGraph and LangChain that extracts text from images using vision-capable language models. The agent can process images and convert them into structured text files.
+
+## Features
+
+- 📸 **Image Text Extraction**: Automatically extract text from images using vision AI models
+- 🤖 **LLM-Powered**: Uses Ollama (local) or OpenAI/Google Gemini (cloud) for vision capabilities
+- 🔄 **Agent Architecture**: Built with LangGraph for intelligent tool orchestration
+- 💾 **File Output**: Saves extracted text to organized output files
+- 🛠️ **Extensible**: Easy to add new tools like temperature conversion and unit conversions
 
 ## Project Structure
 
-``` 
-text-recognition-agent/
+```
+ocr-llm-agent/
 ├── agent/
-│   └── tools.py              # Tools that the agent can access
-├── additions/                # Tools to be added incrementally
-│   ├── additions_1_opencv.py    # Image preprocessing tools
-│   ├── additions_2_temperature.py  # Temperature conversion
+│   └── tools.py                    # Core extraction tool
+├── additions/
+│   ├── additions_1_opencv.py       # Image preprocessing (threshold, deskew)
+│   ├── additions_2_temperature.py  # Temperature conversion tool
 │   └── additions_3_unit_conversions.py  # Unit conversion tools
 ├── images/
-│   └── chocolate_cake_recipe.png  # Sample image for testing
-├── main.py                   # Main agent implementation
-└── README.md
+│   └── chocolate_cake_recipe.png   # Sample input image
+├── output/
+│   └── extracted_text.txt          # Generated output text file
+├── main.py                         # Main agent implementation
+├── requirements.txt                # Python dependencies
+└── description.md                  # Project documentation
 ```
 
-## Project set up
+## Installation
 
-The tutorial starts with the agent having access to one tool, which allows the agent to do OCR text extraction from images using vision-capable LLMs (OpenAI GPT-4o or Ollama Qwen2.5-VL).
+1. **Clone or navigate to the project:**
 
-Tools can then be copied to `tools.py` and imported to `main.py` to extend the functionality of the agent.
+```bash
+cd ocr-llm-agent
+```
 
-1. Image Preprocessing (`additions_1_opencv.py`)
-2. Fahrenheit to Celsius conversion (`additions_2_temperature.py`)
-3. Unit Conversions (`additions_3_unit_conversions.py`)
+2. **Create and activate virtual environment:**
 
-## Requirements
-* Python 3.13.5
-* Virtual environment with the following packages:
-  * `numpy`
-  * `opencv-python`
-  * `pyyaml`
-  * `requests`
-  * `langchain-core`
-  * `langchain-openai`
-  * `langchain-ollama`
-  * `langgraph`
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+3. **Install dependencies:**
+
+```bash
+pip install -r requirements.txt
+```
+
+4. **Set up environment variables:**
+   Create a `.env` file in the project root:
+
+```
+OPENAI_API_KEY=your_key_here
+GOOGLE_API_KEY=your_key_here
+```
 
 ## Usage
 
-### Basic OCR
-Run the main script to extract text from the sample image.
+### Running the Agent
 
-### Adding New Tools
-The tutorial aims to demonstrate how you can add incremental complexity by moving tools from the additions/ folder to agent/tools.py:
-* Start with basic OCR - Use only extract_text tool
-* Add image preprocessing - Import tools from additions_1_opencv.py
-* Add temperature conversion - Import from additions_2_temperature.py
-* Add unit conversions - Import from additions_3_unit_conversions.py
+1. **Start Ollama (if using local models):**
+
+```bash
+ollama serve
+```
+
+2. **Run the main script:**
+
+```bash
+python main.py
+```
+
+The agent will process the image and save the extracted text to `output/extracted_text.txt`.
+
+## Input & Output
+
+### Input Section
+
+**Location:** `images/` folder
+
+Place your image files here for text extraction. The agent supports:
+
+- PNG images
+- JPG/JPEG images
+- Other standard image formats
+
+**Example:** `images/chocolate_cake_recipe.png`
+
+### Output Section
+
+**Location:** `output/` folder
+
+The extracted text is automatically saved as:
+
+- **File:** `output/extracted_text.txt`
+- **Format:** Plain text with line breaks
+
+**Example Output:**
+
+```
+Best chocolate cake recipe
+Ingredients
+- 2 cups all-purpose flour
+- 2 cups sugar
+- 3/4 cup unsweetened cocoa powder
+- 2 teaspoons baking powder
+...
+Instructions
+1. Preheat oven to 350°F...
+```
