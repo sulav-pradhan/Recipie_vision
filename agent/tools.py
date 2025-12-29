@@ -8,12 +8,14 @@ from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
 from langchain_ollama import ChatOllama
+from langchain_google_genai import ChatGoogleGenerativeAI
 
 from dotenv import load_dotenv
 
 load_dotenv()
-#vision_llm = ChatOpenAI(model="gpt-4o")
-vision_llm = ChatOllama(model = "qwen2.5vl")
+# vision_llm = ChatOpenAI(model="gpt-4o")
+# vision_llm = ChatGoogleGenerativeAI(model = "gemini-3-pro-preview")
+vision_llm = ChatOllama(model = "qwen2.5vl:3b")
 
 @tool
 def extract_text(img_path: str) -> str:
@@ -63,8 +65,17 @@ def extract_text(img_path: str) -> str:
         # Call the vision-capable model
         response = vision_llm.invoke(message)
 
-        # Append extracted text
-        all_text += response.content + "\n\n"
+        # Handle response.content which could be a list or string
+        if isinstance(response.content, list):
+            # Extract text from list of content blocks
+            for block in response.content:
+                if isinstance(block, dict) and block.get("type") == "text":
+                    all_text += block.get("text", "") + "\n\n"
+                elif isinstance(block, str):
+                    all_text += block + "\n\n"
+        else:
+            # If it's a string, just append it
+            all_text += response.content + "\n\n"
 
         return all_text.strip()
 

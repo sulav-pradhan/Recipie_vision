@@ -6,6 +6,7 @@ from langchain_ollama import ChatOllama
 from langgraph.graph import StateGraph, START
 from langgraph.graph.message import add_messages
 from langgraph.prebuilt import ToolNode, tools_condition
+from langchain_google_genai import ChatGoogleGenerativeAI
 
 from dotenv import load_dotenv
 
@@ -15,7 +16,7 @@ from agent.tools import (
 
 load_dotenv()
 
-"check for commit message"
+
 class AgentState(TypedDict):
     input_file: Optional[str]
     messages: Annotated[list[AnyMessage], add_messages]
@@ -24,11 +25,14 @@ tools = [
     extract_text,
 ]
 
-llm = ChatOpenAI(model = "gpt-4o")
-llm_with_tools = llm.bind_tools(tools, parallel_tool_calls=False)
-
-# llm = ChatOllama(model="qwen3:8b", temperature=0.7)
+# llm = ChatOpenAI(model = "gpt-4o")
+# llm_with_tools = llm.bind_tools(tools, parallel_tool_calls=False)
+# llm = ChatGoogleGenerativeAI(model = "gemini-3-pro-preview")
+# for gemini models parrallet tools calls are not supported
 # llm_with_tools = llm.bind_tools(tools)
+
+llm = ChatOllama(model="qwen3:8b", temperature=0.7)
+llm_with_tools = llm.bind_tools(tools)
 
 def assistant(state: AgentState):
     textual_description_of_tools = """
@@ -79,3 +83,22 @@ if __name__ == "__main__":
         "messages": messages,
         "input_file": "images/chocolate_cake_recipe.png"
     }))
+    
+    # Extract text from messages
+    extracted_text = ""
+    for message in messages["messages"]:
+        if hasattr(message, 'content') and isinstance(message.content, str):
+            extracted_text += message.content + "\n"
+    
+    # Create output directory if it doesn't exist
+    import os
+    os.makedirs("output", exist_ok=True)
+    
+    # Save to text file
+    output_path = "output/extracted_text.txt"
+    with open(output_path, "w") as f:
+        f.write(extracted_text)
+    
+    print(f"\n✓ Text saved to: {output_path}")
+    print("\n=== Extracted Text ===")
+    print(extracted_text)

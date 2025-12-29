@@ -22,6 +22,7 @@ venv/
 env/
 ENV/
 .venv/
+recipieVisionEnv/
 # VS Code
 .vscode/
 
