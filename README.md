@@ -35,10 +35,6 @@ ocr-llm-agent/
 
 1. **Clone or navigate to the project:**
 
-```bash
-cd ocr-llm-agent
-```
-
 2. **Create and activate virtual environment:**
 
 ```bash
